@@ -1,13 +1,14 @@
 {
   "coffee-script": "../vendor/coffee-script",
   "acorn": "../vendor/acorn",
+  "csvscript": "../vendor/csvscript",
   "droplet-view": "view",
   "droplet-controller": "controller",
   "droplet-model": "model",
   "droplet-draw": "draw",
   "droplet-coffee": "coffee",
   "droplet-javascript": "javascript",
-  "droplet-csvparser": "csvparser",
+  "droplet-csv": "csv",
   "droplet-parser": "parser",
   "droplet-helper": "helper",
   "droplet": "main"

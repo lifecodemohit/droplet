@@ -1,11 +1,28 @@
+###
+author : lifecodemohit
+lang   : coffeescript
+###
 define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helper, model,parser,csvscript) ->
   class csvParser extends parser.Parser
     markRoot: ->
       tree=csvscript.parse(@text)
       console.log(tree)
       @mark 0, tree, 0
-    getSocketLevel: (tree) -> helper.ANY_DROP
-    getAcceptsRule: (tree) -> default: helper.VALUE_ONLY
+
+    getcolor: (node) ->
+    	return 'violet'
+
+    getSocketLevel: (node) -> helper.ANY_DROP
+
+    getAcceptsRule: (node) -> default: helper.VALUE_ONLY
+    
+    getClasses: (node) ->
+      switch node.type
+        when 'each_node'
+          return [node.type,'mostly-block']
+        when 'each_node_node'
+          return [node.type,'mostly-value']
+
     getBounds: (node) ->
       bounds = {
         start: {
@@ -33,22 +50,22 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
       return bounds
 
     mark: (indentDepth, node, depth) ->
-      if node.type == 'Program'
+      switch node.type
+        when 'Program'
           for statement in node.body
-            console.log(statement)
             @mark indentDepth, statement, depth + 1
-      if node.type == 'each_node' 
-        @csvBlock node, depth
-        for argument in node.node_list
-          @csvSocketAndMark indentDepth, argument, depth + 1
+        when 'each_node' 
+          @csvBlock node, depth
+          for argument in node.node_list
+            @csvSocketAndMark indentDepth, argument, depth + 1
 
     csvBlock: (node, depth) ->
       @addBlock
         bounds: @getBounds node
         depth: 0
         precedence: 0
-        color: 'value'
-        classes: []
+        color: @getcolor node
+        classes: @getClasses node
         socketLevel: @getSocketLevel node
 
     csvSocketAndMark: (indentDepth, node, depth, precedence, bounds) ->
@@ -56,9 +73,14 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
         bounds: bounds ? @getBounds node
         depth: depth
         precedence: precedence
-        classes: []
+        classes: @getClasses node
         accepts: @getAcceptsRule node
+
     csvParser.parens = (leading, trailing, node, context) ->
       return [leading, trailing]
+
+    csvParser.drop = (block, context, pred) ->
+      if context.type is 'socket'
+        return helper.FORBID
 
   return parser.wrapParser csvParser

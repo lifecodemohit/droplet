@@ -10,7 +10,11 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
       @mark 0, tree, 0
 
     getcolor: (node) ->
-    	return 'violet'
+      switch node.type
+        when 'each_node'
+          return 'violet'
+        when 'comment'
+          return 'white'
 
     getSocketLevel: (node) -> helper.ANY_DROP
 
@@ -20,6 +24,8 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
       switch node.type
         when 'each_node'
           return [node.type,'mostly-block']
+        when 'comment'
+          return [node.type,'no-drop']
         when 'each_node_node'
           return [node.type,'mostly-value']
 
@@ -58,6 +64,8 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
           @csvBlock node, depth
           for argument in node.node_list
             @csvSocketAndMark indentDepth, argument, depth + 1
+        when 'comment'
+          @csvBlock node, depth
 
     csvBlock: (node, depth) ->
       @addBlock
@@ -82,5 +90,7 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
     csvParser.drop = (block, context, pred) ->
       if context.type is 'socket'
         return helper.FORBID
+      else
+      	return helper.ENCOURAGE
 
   return parser.wrapParser csvParser

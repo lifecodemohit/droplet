@@ -2823,6 +2823,7 @@ define ['droplet-helper',
     @aceEditor.setFontSize 15
     acemode = @options.mode
     if acemode is 'coffeescript' then acemode = 'coffee'
+    if acemode is 'csvparser' then acemode = 'csv'  #csv_changes
     @aceEditor.getSession().setMode 'ace/mode/' + acemode
     @aceEditor.getSession().setTabSize 2
 
@@ -3562,7 +3563,7 @@ define ['droplet-helper',
 
     oldScrollTop = @aceEditor.session.getScrollTop()
 
-    @setAceValue value
+    @setAceValue value #csv_changes
     @resizeTextMode()
 
     @aceEditor.session.setScrollTop oldScrollTop
@@ -3577,7 +3578,7 @@ define ['droplet-helper',
 
   Editor::addEmptyLine = (str) ->
     if str.length is 0 or str[str.length - 1] is '\n'
-      return str
+      return str 
     else
       return str + '\n'
 
@@ -3953,8 +3954,17 @@ define ['droplet-helper',
     else
       lineDiv = document.createElement 'div'
       lineDiv.className = 'droplet-gutter-line'
-      lineDiv.innerText = lineDiv.textContent = line + 1
-
+      lineDiv.innerText = lineDiv.textContent = line + 1   #csv_changes
+      
+      #acemode = @options.mode
+      #if acemode is 'csvparser'  #csv_changes
+      #  btn = document.createElement("input")
+      #  btn.type="submit"
+      #  btn.value="submit"
+      #  btn.setAttribute("id", "id_"+(line+1).toString())
+      #  console.log(btn.id)
+      #  lineDiv.appendChild btn
+      
       @lineNumberTags[line] = lineDiv
 
     lineDiv.style.top = "#{treeView.bounds[line].y + treeView.distanceToBase[line].above - @view.opts.textHeight - @fontAscent - @scrollOffsets.main.y}px"
@@ -3962,6 +3972,7 @@ define ['droplet-helper',
     lineDiv.style.fontSize = @fontSize + 'px'
 
     @lineNumberWrapper.appendChild lineDiv
+    
 
   Editor::findLineNumberAtCoordinate = (coord) ->
     treeView = @view.getViewNodeFor @tree

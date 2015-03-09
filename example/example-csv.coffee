@@ -35,11 +35,11 @@ require ['droplet'], (droplet) ->
                   block: "//Sample comment",
                   title: "Comment"
                 }
-                ]
+              ]
       }
-      ]
-    }
-  # Example program (fizzbuzz)
+    ]
+  }
+
   examplePrograms = {
     empty: ''
   }

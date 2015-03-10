@@ -12,6 +12,14 @@ lang   : javascript
 
   exports.version = "0.7.1";
 
+  function getLeadingWhiteSpaceCountFor(string) {
+  	//Reference : http://jsperf.com/leading-white-space-count
+    for (var result = 0, characterCode = string.charCodeAt(0); 32 == characterCode || characterCode > 8 && characterCode < 14 && characterCode != 11 && characterCode != 12;) {
+      characterCode = string.charCodeAt(++result);
+    }
+    return result;
+  }  
+
 	exports.parse = function(inp) {        // inp -> input @text
 		//console.log(inp);
 		var inp_separate = inp.split(/\r\n|\n/);
@@ -44,9 +52,30 @@ lang   : javascript
 					var each_node_list=[];
 					for(var j=0;j<=entries.length-1;j++)
 					{
-						var each_node_node={type:"each_node_node",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count},end:{line:i,column:count+entries[j].length}},raw:entries[j]};
-						count=count+entries[j].length+1;
-						each_node_list.push(each_node_node);			
+						//console.log(getLeadingWhiteSpaceCountFor(entries[j]));
+						var leading_space=getLeadingWhiteSpaceCountFor(entries[j]);
+						var trailing_space=getLeadingWhiteSpaceCountFor(entries[j].split("").reverse().join(""));
+						if(entries[j].match(/^\s*\".*$/))
+						{
+							var msg="";
+							while((j<entries.length)&&(!entries[j].match(/^.*\s*\"$/)))
+							{
+								msg=msg+entries[j];
+								msg=msg+',';
+								j++;
+							}
+							if(j<entries.length)
+								msg=msg+entries[j];
+							var each_node_node={type:"each_node_node",start:end_count+count,end:end_count+count+msg.length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+msg.length-trailing_space}},raw:msg};
+							count=count+msg.length+1;
+							each_node_list.push(each_node_node);
+						}
+						else
+						{
+							var each_node_node={type:"each_node_node",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entries[j].length-trailing_space}},raw:entries[j]};
+							count=count+entries[j].length+1;
+							each_node_list.push(each_node_node);			
+						}
 					}
 					var each_node={type:"each_node",start:end_count,end:end_count+count-1,loc:{start:{line:i,column:0},end:{line:i,column:count-1}},node_list:each_node_list};
 					end_count=end_count+count-1;

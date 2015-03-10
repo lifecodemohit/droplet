@@ -15,22 +15,25 @@ require ['droplet'], (droplet) ->
     # CSV TESTING:
     mode: 'csvparser'
     modeOptions: {
-      #blockFunctions: ['pen', 'dot', 'blarg']
     }
+
     palette: [
       {
-        name: 'Draw'
-        color: 'blue'
+        name: 'Sample blocks'
+        color: 'green'
         blocks: [
                 {
-                  block: "mark,\",2.0\",alice",
+                  block: "monday,4.0,frank",
                   title: "Sample Text 1"
                 },
                 {
-                  block: "ma,3.0,alce,list",
+                  block: "tuesday,2.3,sally",
                   title: "Sample Text 2"
-                }
-                ,
+                },
+                {
+                  block: "wednesday,1.8,carol",
+                  title: "Sample Text 3"
+                },
                 {
                   block: "//Sample comment",
                   title: "Comment"
@@ -41,6 +44,11 @@ require ['droplet'], (droplet) ->
   }
 
   examplePrograms = {
+    sample: '''
+    monday,4.0,frank
+    tuesday,2.3,sally
+    wednesday,1.8,carol
+    '''
     empty: ''
   }
 
@@ -49,7 +57,7 @@ require ['droplet'], (droplet) ->
 
   # Initialize to starting text
   startingText = localStorage.getItem 'example'
-  editor.setValue startingText or examplePrograms.empty
+  editor.setValue startingText or examplePrograms.sample
 
   # Update textarea on ICE editor change
   onChange = ->

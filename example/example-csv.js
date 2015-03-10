@@ -42,13 +42,15 @@
       ]
     });
     examplePrograms = {
-      sample: 'monday,4.0,frank\ntuesday,2.3,sally\nwednesday,1.8,carol',
+      sample1: '//Sample 1 program\nbasic,simple,text\nspace, separated ,text\nquoted, "text ,handled"',
+      sample2: '//Sample 2 Program\nmonday,4.0,frank\ntuesday,2.3,sally\nwednesday,1.8,carol',
+      wikipedia_example: '//Wikipedia Example\nYear,Make,Model,Description,Price\n1997,Ford,E350,"ac, abs, moon",3000.00\n1999,Chevy,"Venture ""Extended Edition""","",4900.00\n1999,Chevy,"Venture ""Extended Edition, Very Large""",,5000.00\n1996,Jeep,Grand Cherokee,"MUST SELL!air, moon roof, loaded",4799.00',
       empty: ''
     };
     editor.setEditorState(false);
     editor.aceEditor.getSession().setUseWrapMode(true);
     startingText = localStorage.getItem('example');
-    editor.setValue(startingText || examplePrograms.sample);
+    editor.setValue(startingText || examplePrograms.sample1);
     onChange = function() {
       return localStorage.setItem('example', editor.getValue());
     };

@@ -44,10 +44,25 @@ require ['droplet'], (droplet) ->
   }
 
   examplePrograms = {
-    sample: '''
+    sample1: '''
+    //Sample 1 program
+    basic,simple,text
+    space, separated ,text
+    quoted, "text ,handled"
+    '''
+    sample2: '''
+    //Sample 2 Program
     monday,4.0,frank
     tuesday,2.3,sally
     wednesday,1.8,carol
+    '''
+    wikipedia_example: '''
+    //Wikipedia Example
+    Year,Make,Model,Description,Price
+    1997,Ford,E350,"ac, abs, moon",3000.00
+    1999,Chevy,"Venture ""Extended Edition""","",4900.00
+    1999,Chevy,"Venture ""Extended Edition, Very Large""",,5000.00
+    1996,Jeep,Grand Cherokee,"MUST SELL!air, moon roof, loaded",4799.00
     '''
     empty: ''
   }
@@ -57,7 +72,7 @@ require ['droplet'], (droplet) ->
 
   # Initialize to starting text
   startingText = localStorage.getItem 'example'
-  editor.setValue startingText or examplePrograms.sample
+  editor.setValue startingText or examplePrograms.sample1
 
   # Update textarea on ICE editor change
   onChange = ->

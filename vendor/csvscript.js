@@ -24,7 +24,7 @@ lang   : javascript
 		//console.log(inp);
 		var inp_separate = inp.split(/\r\n|\n/);
 		var end_count = 0; 
-		var node_list = [];
+		var argument = [];
 		for(var i=0;i<=inp_separate.length-1;i++)
 		{
 			if(inp_separate[i].length>0)
@@ -33,23 +33,23 @@ lang   : javascript
 				{
 					var entries = inp_separate[i];
 					var count=0;
-					var each_node_list=[];
+					var block_list=[];
 					for(var j=0;j<=entries.length-1;j++)
 					{
-						var each_node_node={type:"each_node_node",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count},end:{line:i,column:count+entries[j].length}},raw:entries[j]};
+						var socket={type:"socket",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count},end:{line:i,column:count+entries[j].length}},raw:entries[j]};
 						count=count+entries[j].length+1;
-						each_node_list.push(each_node_node);			
+						block_list.push(socket);			
 					}
-					var each_node={type:"comment",start:end_count,end:end_count+count-1,loc:{start:{line:i,column:0},end:{line:i,column:count-1}},node_list:each_node_list};
+					var block={type:"comment",start:end_count,end:end_count+count-1,loc:{start:{line:i,column:0},end:{line:i,column:count-1}},argument:block_list};
 					end_count=end_count+count-1;
-					node_list.push(each_node);
+					argument.push(block);
 				}
 				else
 				{
 					var text=inp_separate[i];
 					var entries = inp_separate[i].split(',');
 					var count=0;
-					var each_node_list=[];
+					var block_list=[];
 					for(var j=0;j<=entries.length-1;j++)
 					{
 						if(entries[j].match(/^.*\s*\/\/.*$/))
@@ -70,9 +70,9 @@ lang   : javascript
 								entry_skip=entry_skip+entries[j];
 							else
 								return null;
-							var each_node_node={type:"each_node_node",start:end_count+count,end:end_count+count+entry_skip.length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entry_skip.length-trailing_space}},raw:entry_skip};
+							var socket={type:"socket",start:end_count+count,end:end_count+count+entry_skip.length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entry_skip.length-trailing_space}},raw:entry_skip};
 							count=count+entry_skip.length+1;
-							each_node_list.push(each_node_node);
+							block_list.push(socket);
 						}
 						else if(entries[j].match(/^.*\s*\"$/))
 						{
@@ -80,19 +80,19 @@ lang   : javascript
 				    }
 						else
 						{
-							var each_node_node={type:"each_node_node",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entries[j].length-trailing_space}},raw:entries[j]};
+							var socket={type:"socket",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entries[j].length-trailing_space}},raw:entries[j]};
 							count=count+entries[j].length+1;
-							each_node_list.push(each_node_node);			
+							block_list.push(socket);			
 						}
 					}
-					var each_node={type:"each_node",start:end_count,end:end_count+count-1,loc:{start:{line:i,column:0},end:{line:i,column:count-1}},node_list:each_node_list};
+					var block={type:"block",start:end_count,end:end_count+count-1,loc:{start:{line:i,column:0},end:{line:i,column:count-1}},argument:block_list};
 					end_count=end_count+count-1;
-					node_list.push(each_node);
+					argument.push(block);
 				}
 			}		
 		}
 		var last_entry=inp_separate.length-1;
-		var result_list={type:"Program",start:0,end:end_count,loc:{start:{line:0,column:0},end:{line:last_entry,column:inp_separate[last_entry].length}},body:node_list};
+		var result_list={type:"Program",start:0,end:end_count,loc:{start:{line:0,column:0},end:{line:last_entry,column:inp_separate[last_entry].length}},body:argument};
 		return result_list;
 	};
 });

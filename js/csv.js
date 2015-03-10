@@ -20,13 +20,12 @@ lang   : coffeescript
       csvParser.prototype.markRoot = function() {
         var tree;
         tree = csvscript.parse(this.text);
-        console.log(tree);
         return this.mark(0, tree, 0);
       };
 
       csvParser.prototype.getcolor = function(node) {
         switch (node.type) {
-          case 'each_node':
+          case 'block':
             return 'violet';
           case 'comment':
             return 'white';
@@ -45,11 +44,11 @@ lang   : coffeescript
 
       csvParser.prototype.getClasses = function(node) {
         switch (node.type) {
-          case 'each_node':
+          case 'block':
             return [node.type, 'mostly-block'];
           case 'comment':
             return [node.type, 'no-drop'];
-          case 'each_node_node':
+          case 'socket':
             return [node.type, 'mostly-value'];
         }
       };
@@ -96,9 +95,9 @@ lang   : coffeescript
             }
             return results;
             break;
-          case 'each_node':
+          case 'block':
             this.csvBlock(node, depth);
-            ref1 = node.node_list;
+            ref1 = node.argument;
             results1 = [];
             for (j = 0, len1 = ref1.length; j < len1; j++) {
               argument = ref1[j];

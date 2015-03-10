@@ -6,12 +6,12 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
   class csvParser extends parser.Parser
     markRoot: ->
       tree=csvscript.parse(@text)
-      console.log(tree)
+      #console.log(tree)
       @mark 0, tree, 0
 
     getcolor: (node) ->
       switch node.type
-        when 'each_node'
+        when 'block'
           return 'violet'
         when 'comment'
           return 'white'
@@ -22,11 +22,11 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
     
     getClasses: (node) ->
       switch node.type
-        when 'each_node'
+        when 'block'
           return [node.type,'mostly-block']
         when 'comment'
           return [node.type,'no-drop']
-        when 'each_node_node'
+        when 'socket'
           return [node.type,'mostly-value']
 
     getBounds: (node) ->
@@ -60,9 +60,9 @@ define ['droplet-helper', 'droplet-model', 'droplet-parser','csvscript'], (helpe
         when 'Program'
           for statement in node.body
             @mark indentDepth, statement, depth + 1
-        when 'each_node' 
+        when 'block' 
           @csvBlock node, depth
-          for argument in node.node_list
+          for argument in node.argument
             @csvSocketAndMark indentDepth, argument, depth + 1
         when 'comment'
           @csvBlock node, depth

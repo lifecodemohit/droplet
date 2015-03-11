@@ -2904,15 +2904,15 @@
       acemode = this.options.mode;
       if (acemode === 'csvparser') {
         this.plusButton = document.createElement('div');
-        this.plusButton.style.position = 'absolute';
+        this.plusButton.style.position = 'fixed';
         this.plusButton.style.top = '9px';
-        this.plusButton.style.right = '20px';
+        this.plusButton.style.right = '30px';
         this.plusButton.style.height = 'auto';
         this.plusButton.style.width = 'auto';
         this.negButton = document.createElement('div');
-        this.negButton.style.position = 'absolute';
+        this.negButton.style.position = 'fixed';
         this.negButton.style.top = '9px';
-        this.negButton.style.right = '0px';
+        this.negButton.style.right = '5px';
         this.negButton.style.height = 'auto';
         this.negButton.style.width = 'auto';
       }
@@ -3529,7 +3529,7 @@
           pbuttonDiv = document.createElement('div');
           pbuttonDiv.className = 'droplet-gutter-pbutton';
           pbuttonDiv.id = (line + 1).toString();
-          pbuttonDiv.innerHTML = '<input type="submit" value="+" style="background:#ccc; border:solid #000 5px; " onclick="plus(' + (line + 1).toString() + ')">';
+          pbuttonDiv.innerHTML = '<input type="submit" value="+" style="background:rgba(255,255,255,1); border:solid #000 2px; cursor:pointer " onclick="plus(' + (line + 1).toString() + ')">';
           pbuttonDiv.style.top = '0px';
           pbuttonDiv.style.height = treeView.bounds[line].height + 'px';
           pbuttonDiv.style.fontSize = this.fontSize + 'px';
@@ -3538,7 +3538,7 @@
           nbuttonDiv = document.createElement('div');
           nbuttonDiv.className = 'droplet-gutter-nbutton';
           nbuttonDiv.id = (line + 1).toString();
-          nbuttonDiv.innerHTML = '<input type="submit" value="-" style="background:#ccc; border:solid #000 5px; " onclick="neg(' + (line + 1).toString() + ')">';
+          nbuttonDiv.innerHTML = '<input type="submit" value="-" style="background:rgba(255,255,255,1); border:solid #000 2px; cursor:pointer " onclick="neg(' + (line + 1).toString() + ')">';
           nbuttonDiv.style.top = '0px';
           nbuttonDiv.style.height = treeView.bounds[line].height + 'px';
           nbuttonDiv.style.fontSize = this.fontSize + 'px';

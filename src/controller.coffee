@@ -3293,15 +3293,15 @@ define ['droplet-helper',
     acemode = @options.mode
     if acemode is 'csvparser'  #csv_changes
       @plusButton = document.createElement 'div'
-      @plusButton.style.position='absolute'
+      @plusButton.style.position='fixed'
       @plusButton.style.top = '9px'
-      @plusButton.style.right = '20px'
+      @plusButton.style.right = '30px'
       @plusButton.style.height = 'auto'
       @plusButton.style.width = 'auto'
       @negButton = document.createElement 'div'
-      @negButton.style.position='absolute'
+      @negButton.style.position='fixed'
       @negButton.style.top = '9px'
-      @negButton.style.right = '0px'
+      @negButton.style.right = '5px'
       @negButton.style.height = 'auto'
       @negButton.style.width = 'auto'
 
@@ -3996,7 +3996,7 @@ define ['droplet-helper',
         pbuttonDiv = document.createElement 'div'
         pbuttonDiv.className = 'droplet-gutter-pbutton'
         pbuttonDiv.id=(line+1).toString()
-        pbuttonDiv.innerHTML =  '<input type="submit" value="+" style="background:#ccc; border:solid #000 5px; " onclick="plus('+(line+1).toString()+')">'   #csv_changes
+        pbuttonDiv.innerHTML =  '<input type="submit" value="+" style="background:rgba(255,255,255,1); border:solid #000 2px; cursor:pointer " onclick="plus('+(line+1).toString()+')">'   #csv_changes
         pbuttonDiv.style.top = '0px'
         pbuttonDiv.style.height = treeView.bounds[line].height + 'px'
         pbuttonDiv.style.fontSize = @fontSize + 'px'
@@ -4006,7 +4006,7 @@ define ['droplet-helper',
         nbuttonDiv = document.createElement 'div'
         nbuttonDiv.className = 'droplet-gutter-nbutton'
         nbuttonDiv.id=(line+1).toString()
-        nbuttonDiv.innerHTML =  '<input type="submit" value="-" style="background:#ccc; border:solid #000 5px; " onclick="neg('+(line+1).toString()+')">'   #csv_changes
+        nbuttonDiv.innerHTML =  '<input type="submit" value="-" style="background:rgba(255,255,255,1); border:solid #000 2px; cursor:pointer " onclick="neg('+(line+1).toString()+')">'   #csv_changes
         nbuttonDiv.style.top = '0px'
         nbuttonDiv.style.height = treeView.bounds[line].height + 'px'
         nbuttonDiv.style.fontSize = @fontSize + 'px'

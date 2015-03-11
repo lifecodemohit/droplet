@@ -117,16 +117,28 @@ body {
       else
       {
         var entries=inp_separate[j].split(',');
+        var k=entries.length-1;
         if(j==arg-1)
         {
-          entries.length=entries.length-1;
+          if(entries[k].match(/^.*\s*\"$/))
+          {
+            while((k>=0)&&(!entries[k].match(/^\s*\".*$/)))
+            {
+              k--;
+            }
+            k--;
+          }
+          else
+            k=k-1;
         }
-        for(var i=0;i<entries.length;i++)
+        for(var i=0;i<=k;i++)
         {
           result=result+entries[i];
-          if(i+1!=entries.length)
+          if((i+1)!=(k+1))
             result+=',';
         }
+        if(result.charCodeAt(result.length-1)==44)
+              result=result+'\" \"';
         if(j+1!=inp_separate.length)
           result=result+'\n';
       }

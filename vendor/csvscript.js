@@ -76,6 +76,10 @@ lang   : javascript
 							count=count+entry_skip.length+1;
 							block_list.push(socket);
 						}
+						else if(entries[j].match(/^.*\s*\"$/))
+						{
+				    	return null;
+				    }
 						else
 						{
 							var socket={type:"socket",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entries[j].length-trailing_space}},raw:entries[j]};

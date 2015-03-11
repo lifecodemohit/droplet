@@ -2608,7 +2608,7 @@
 
     })();
     Editor.prototype.performMeltAnimation = function(fadeTime, translateTime, cb) {
-      var aceScrollTop, bottom, div, fn1, fn2, i, j, k, len, line, lineHeight, ref1, ref2, ref3, textElement, textElements, top, translatingElements, translationVectors, treeView;
+      var aceScrollTop, acemode, bottom, div, fn1, fn2, i, j, k, len, line, lineHeight, ref1, ref2, ref3, textElement, textElements, top, translatingElements, translationVectors, treeView;
       if (fadeTime == null) {
         fadeTime = 500;
       }
@@ -2695,6 +2695,11 @@
           fn2(div, line);
         }
         this.lineNumberWrapper.style.display = 'none';
+        acemode = this.options.mode;
+        if (acemode === 'csvparser') {
+          this.plusButton.style.display = 'none';
+          this.negButton.style.display = 'none';
+        }
         this.mainCanvas.style.transition = this.highlightCanvas.style.transition = this.cursorCanvas.style.opacity = "opacity " + fadeTime + "ms linear";
         this.mainCanvas.style.opacity = this.highlightCanvas.style.opacity = this.cursorCanvas.style.opacity = 0;
         setTimeout(((function(_this) {
@@ -2854,11 +2859,16 @@
             _this.dropletElement.style.left = _this.paletteWrapper.offsetWidth + "px";
             _this.paletteWrapper.style.left = '0px';
             return setTimeout((function() {
-              var len2, m;
+              var acemode, len2, m;
               _this.dropletElement.style.transition = _this.paletteWrapper.style.transition = '';
               _this.mainScroller.style.overflow = 'auto';
               _this.currentlyAnimating = false;
               _this.lineNumberWrapper.style.display = 'block';
+              acemode = _this.options.mode;
+              if (acemode === 'csvparser') {
+                _this.plusButton.style.display = 'block';
+                _this.negButton.style.display = 'block';
+              }
               _this.redrawMain();
               _this.paletteHeader.style.zIndex = 257;
               for (m = 0, len2 = translatingElements.length; m < len2; m++) {
@@ -2886,15 +2896,36 @@
       }
     };
     hook('populate', 2, function() {
+      var acemode;
       this.scrollOffsets = {
         main: new this.draw.Point(0, 0),
         palette: new this.draw.Point(0, 0)
       };
+      acemode = this.options.mode;
+      if (acemode === 'csvparser') {
+        this.plusButton = document.createElement('div');
+        this.plusButton.style.position = 'absolute';
+        this.plusButton.style.top = '9px';
+        this.plusButton.style.right = '20px';
+        this.plusButton.style.height = 'auto';
+        this.plusButton.style.width = 'auto';
+        this.negButton = document.createElement('div');
+        this.negButton.style.position = 'absolute';
+        this.negButton.style.top = '9px';
+        this.negButton.style.right = '0px';
+        this.negButton.style.height = 'auto';
+        this.negButton.style.width = 'auto';
+      }
       this.mainScroller = document.createElement('div');
       this.mainScroller.className = 'droplet-main-scroller';
       this.mainScrollerStuffing = document.createElement('div');
       this.mainScrollerStuffing.className = 'droplet-main-scroller-stuffing';
       this.mainScroller.appendChild(this.mainScrollerStuffing);
+      acemode = this.options.mode;
+      if (acemode === 'csvparser') {
+        this.mainScroller.appendChild(this.plusButton);
+        this.mainScroller.appendChild(this.negButton);
+      }
       this.dropletElement.appendChild(this.mainScroller);
       this.wrapperElement.addEventListener('scroll', (function(_this) {
         return function() {
@@ -3460,12 +3491,18 @@
       }
     });
     hook('populate', 0, function() {
+      var acemode;
       this.gutter = document.createElement('div');
       this.gutter.className = 'droplet-gutter';
       this.lineNumberWrapper = document.createElement('div');
       this.gutter.appendChild(this.lineNumberWrapper);
       this.gutterVersion = -1;
       this.lineNumberTags = {};
+      acemode = this.options.mode;
+      if (acemode === 'csvparser') {
+        this.pButtonTags = {};
+        this.nButtonTags = {};
+      }
       return this.dropletElement.appendChild(this.gutter);
     });
     Editor.prototype.resizeGutter = function() {
@@ -3474,14 +3511,40 @@
       return this.gutter.style.height = (Math.max(this.dropletElement.offsetHeight, (ref1 = (ref2 = this.view.getViewNodeFor(this.tree).totalBounds) != null ? ref2.height : void 0) != null ? ref1 : 0)) + "px";
     };
     Editor.prototype.addLineNumberForLine = function(line) {
-      var lineDiv, treeView;
+      var acemode, lineDiv, nbuttonDiv, pbuttonDiv, treeView;
       treeView = this.view.getViewNodeFor(this.tree);
       if (line in this.lineNumberTags) {
         lineDiv = this.lineNumberTags[line];
+        acemode = this.options.mode;
+        if (acemode === 'csvparser') {
+          pbuttonDiv = this.pButtonTags[line];
+          nbuttonDiv = this.nButtonTags[line];
+        }
       } else {
         lineDiv = document.createElement('div');
         lineDiv.className = 'droplet-gutter-line';
         lineDiv.innerText = lineDiv.textContent = line + 1;
+        acemode = this.options.mode;
+        if (acemode === 'csvparser') {
+          pbuttonDiv = document.createElement('div');
+          pbuttonDiv.className = 'droplet-gutter-pbutton';
+          pbuttonDiv.id = (line + 1).toString();
+          pbuttonDiv.innerHTML = '<input type="submit" value="+" style="background:#ccc; border:solid #000 5px; " onclick="plus(' + (line + 1).toString() + ')">';
+          pbuttonDiv.style.top = '0px';
+          pbuttonDiv.style.height = treeView.bounds[line].height + 'px';
+          pbuttonDiv.style.fontSize = this.fontSize + 'px';
+          this.pButtonTags[line] = pbuttonDiv;
+          this.plusButton.appendChild(pbuttonDiv);
+          nbuttonDiv = document.createElement('div');
+          nbuttonDiv.className = 'droplet-gutter-nbutton';
+          nbuttonDiv.id = (line + 1).toString();
+          nbuttonDiv.innerHTML = '<input type="submit" value="-" style="background:#ccc; border:solid #000 5px; " onclick="neg(' + (line + 1).toString() + ')">';
+          nbuttonDiv.style.top = '0px';
+          nbuttonDiv.style.height = treeView.bounds[line].height + 'px';
+          nbuttonDiv.style.fontSize = this.fontSize + 'px';
+          this.nButtonTags[line] = nbuttonDiv;
+          this.negButton.appendChild(nbuttonDiv);
+        }
         this.lineNumberTags[line] = lineDiv;
       }
       lineDiv.style.top = (treeView.bounds[line].y + treeView.distanceToBase[line].above - this.view.opts.textHeight - this.fontAscent - this.scrollOffsets.main.y) + "px";
@@ -3515,7 +3578,7 @@
       return pivot;
     };
     hook('redraw_main', 0, function(changedBox) {
-      var bottom, j, line, ref1, ref2, ref3, tag, top, treeView;
+      var acemode, bottom, j, line, ref1, ref2, ref3, ref4, ref5, tag, top, treeView;
       treeView = this.view.getViewNodeFor(this.tree);
       top = this.findLineNumberAtCoordinate(this.scrollOffsets.main.y);
       bottom = this.findLineNumberAtCoordinate(this.scrollOffsets.main.y + this.mainCanvas.height);
@@ -3528,6 +3591,25 @@
         if (line < top || line > bottom) {
           this.lineNumberTags[line].parentNode.removeChild(this.lineNumberTags[line]);
           delete this.lineNumberTags[line];
+        }
+      }
+      acemode = this.options.mode;
+      if (acemode === 'csvparser') {
+        ref4 = this.pButtonTags;
+        for (line in ref4) {
+          tag = ref4[line];
+          if (line < top || line > bottom) {
+            this.pButtonTags[line].parentNode.removeChild(this.pButtonTags[line]);
+            delete this.pButtonTags[line];
+          }
+        }
+        ref5 = this.nButtonTags;
+        for (line in ref5) {
+          tag = ref5[line];
+          if (line < top || line > bottom) {
+            this.nButtonTags[line].parentNode.removeChild(this.nButtonTags[line]);
+            delete this.nButtonTags[line];
+          }
         }
       }
       if (changedBox) {

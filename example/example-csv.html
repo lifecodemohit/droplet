@@ -71,6 +71,69 @@ body {
       }
 }
 </style>
+<script type="text/javascript">
+  function plus(arg) {
+    var result="";
+    var inp=editor.getValue();
+    var inp_separate = inp.split(/\r\n|\n/);
+    for(var j=0;j<inp_separate.length;j++)
+    {
+      if(inp_separate[j].match(/^\s*\/\/.*$/))
+      {
+        result=result+inp_separate[j]+'\n';
+      }
+      else
+      {
+        var entries=inp_separate[j].split(',');
+        if(j==arg-1)
+        {
+          if(entries[0].length==0)
+            entries[entries.length-1]+='\" \"';
+          else  
+            entries[entries.length-1]+=',\" \"';
+        }
+        for(var i=0;i<entries.length;i++)
+        {
+          result=result+entries[i];
+          if(i+1!=entries.length)
+            result+=',';
+        }
+        if(j+1!=inp_separate.length)
+          result=result+'\n';
+      }
+    }
+    editor.setValue(result);
+  };
+  function neg(arg) {
+    var result="";
+    var inp=editor.getValue();
+    var inp_separate = inp.split(/\r\n|\n/);
+    for(var j=0;j<inp_separate.length;j++)
+    {
+      if(inp_separate[j].match(/^\s*\/\/.*$/))
+      {
+        result=result+inp_separate[j]+'\n';
+      }
+      else
+      {
+        var entries=inp_separate[j].split(',');
+        if(j==arg-1)
+        {
+          entries.length=entries.length-1;
+        }
+        for(var i=0;i<entries.length;i++)
+        {
+          result=result+entries[i];
+          if(i+1!=entries.length)
+            result+=',';
+        }
+        if(j+1!=inp_separate.length)
+          result=result+'\n';
+      }
+    }
+    editor.setValue(result);
+  };
+</script>
 </head>
 <body>
 	<div id="editor">
@@ -80,7 +143,7 @@ body {
       <select id='which_example'>
         <option value='sample1'>Sample-1</option>
         <option value='sample2'>Sample-2</option>
-        <option value='wikipedia_example'>Wkidpedia-Example</option>
+        <option value='wikipedia_example'>Wikipedia-Example</option>
         <option value='empty'>Empty</option>
       </select>
       <span id='message'></span>

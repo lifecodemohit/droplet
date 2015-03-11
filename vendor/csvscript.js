@@ -62,10 +62,12 @@ lang   : javascript
 							var entry_skip="";
 							while((j<entries.length)&&(!entries[j].match(/^.*\s*\"$/)))
 							{
+								trailing_space=0;
 								entry_skip=entry_skip+entries[j];
 								entry_skip=entry_skip+',';
 								j++;
 							}
+
 							if(j<entries.length)
 								entry_skip=entry_skip+entries[j];
 							else
@@ -74,10 +76,6 @@ lang   : javascript
 							count=count+entry_skip.length+1;
 							block_list.push(socket);
 						}
-						else if(entries[j].match(/^.*\s*\"$/))
-						{
-				    	return null;
-				    }
 						else
 						{
 							var socket={type:"socket",start:end_count+count,end:end_count+count+entries[j].length,loc:{start:{line:i,column:count+leading_space},end:{line:i,column:count+entries[j].length-trailing_space}},raw:entries[j]};

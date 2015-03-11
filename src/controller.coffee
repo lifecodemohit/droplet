@@ -3055,6 +3055,10 @@ define ['droplet-helper',
           ), fadeTime
 
       @lineNumberWrapper.style.display = 'none'
+      acemode = @options.mode
+      if acemode is 'csvparser'  #csv_changes
+        @plusButton.style.display = 'none'
+        @negButton.style.display = 'none'
 
       # Kick off fade-out transition
 
@@ -3249,7 +3253,11 @@ define ['droplet-helper',
           @mainScroller.style.overflow = 'auto'
 
           @currentlyAnimating = false
-          @lineNumberWrapper.style.display = 'block'
+          @lineNumberWrapper.style.display = 'block'      #csv_changes
+          acemode = @options.mode
+          if acemode is 'csvparser'  #csv_changes
+            @plusButton.style.display = 'block'
+            @negButton.style.display = 'block'          
           @redrawMain()
           @paletteHeader.style.zIndex = 257
 
@@ -3282,6 +3290,21 @@ define ['droplet-helper',
       palette: new @draw.Point 0, 0
     }
 
+    acemode = @options.mode
+    if acemode is 'csvparser'  #csv_changes
+      @plusButton = document.createElement 'div'
+      @plusButton.style.position='absolute'
+      @plusButton.style.top = '9px'
+      @plusButton.style.right = '20px'
+      @plusButton.style.height = 'auto'
+      @plusButton.style.width = 'auto'
+      @negButton = document.createElement 'div'
+      @negButton.style.position='absolute'
+      @negButton.style.top = '9px'
+      @negButton.style.right = '0px'
+      @negButton.style.height = 'auto'
+      @negButton.style.width = 'auto'
+
     @mainScroller = document.createElement 'div'
     @mainScroller.className = 'droplet-main-scroller'
 
@@ -3289,6 +3312,11 @@ define ['droplet-helper',
     @mainScrollerStuffing.className = 'droplet-main-scroller-stuffing'
 
     @mainScroller.appendChild @mainScrollerStuffing
+    acemode = @options.mode
+    if acemode is 'csvparser'  #csv_changes
+      @mainScroller.appendChild @plusButton
+      @mainScroller.appendChild @negButton
+
     @dropletElement.appendChild @mainScroller
 
     # Prevent scrolling on wrapper element
@@ -3937,6 +3965,10 @@ define ['droplet-helper',
     @gutterVersion = -1
 
     @lineNumberTags = {}
+    acemode = @options.mode
+    if acemode is 'csvparser'  #csv_changes
+      @pButtonTags = {}
+      @nButtonTags = {} 
 
     @dropletElement.appendChild @gutter
 
@@ -3950,29 +3982,55 @@ define ['droplet-helper',
 
     if line of @lineNumberTags
       lineDiv = @lineNumberTags[line]
+      acemode = @options.mode
+      if acemode is 'csvparser'  #csv_changes
+        pbuttonDiv = @pButtonTags[line]
+        nbuttonDiv = @nButtonTags[line]      
 
     else
       lineDiv = document.createElement 'div'
       lineDiv.className = 'droplet-gutter-line'
       lineDiv.innerText = lineDiv.textContent = line + 1   #csv_changes
-      
+      acemode = @options.mode
+      if acemode is 'csvparser'  #csv_changes
+        pbuttonDiv = document.createElement 'div'
+        pbuttonDiv.className = 'droplet-gutter-pbutton'
+        pbuttonDiv.id=(line+1).toString()
+        pbuttonDiv.innerHTML =  '<input type="submit" value="+" style="background:#ccc; border:solid #000 5px; " onclick="plus('+(line+1).toString()+')">'   #csv_changes
+        pbuttonDiv.style.top = '0px'
+        pbuttonDiv.style.height = treeView.bounds[line].height + 'px'
+        pbuttonDiv.style.fontSize = @fontSize + 'px'
+        @pButtonTags[line] = pbuttonDiv
+        @plusButton.appendChild pbuttonDiv
+
+        nbuttonDiv = document.createElement 'div'
+        nbuttonDiv.className = 'droplet-gutter-nbutton'
+        nbuttonDiv.id=(line+1).toString()
+        nbuttonDiv.innerHTML =  '<input type="submit" value="-" style="background:#ccc; border:solid #000 5px; " onclick="neg('+(line+1).toString()+')">'   #csv_changes
+        nbuttonDiv.style.top = '0px'
+        nbuttonDiv.style.height = treeView.bounds[line].height + 'px'
+        nbuttonDiv.style.fontSize = @fontSize + 'px'
+        @nButtonTags[line] = nbuttonDiv
+        @negButton.appendChild nbuttonDiv
+
+
       #acemode = @options.mode
       #if acemode is 'csvparser'  #csv_changes
       #  btn = document.createElement("input")
       #  btn.type="submit"
-      #  btn.value="submit"
+      #  btn.value="add"
       #  btn.setAttribute("id", "id_"+(line+1).toString())
       #  console.log(btn.id)
       #  lineDiv.appendChild btn
       
       @lineNumberTags[line] = lineDiv
 
+
     lineDiv.style.top = "#{treeView.bounds[line].y + treeView.distanceToBase[line].above - @view.opts.textHeight - @fontAscent - @scrollOffsets.main.y}px"
     lineDiv.style.height =  treeView.bounds[line].height + 'px'
     lineDiv.style.fontSize = @fontSize + 'px'
 
     @lineNumberWrapper.appendChild lineDiv
-    
 
   Editor::findLineNumberAtCoordinate = (coord) ->
     treeView = @view.getViewNodeFor @tree
@@ -4008,6 +4066,17 @@ define ['droplet-helper',
       if line < top or line > bottom
         @lineNumberTags[line].parentNode.removeChild @lineNumberTags[line]
         delete @lineNumberTags[line]
+
+    acemode = @options.mode
+    if acemode is 'csvparser'  #csv_changes
+      for line, tag of @pButtonTags
+        if line < top or line > bottom
+          @pButtonTags[line].parentNode.removeChild @pButtonTags[line]
+          delete @pButtonTags[line]
+      for line, tag of @nButtonTags
+        if line < top or line > bottom
+          @nButtonTags[line].parentNode.removeChild @nButtonTags[line]
+          delete @nButtonTags[line]
 
     if changedBox
       @gutter.style.height = "#{Math.max @mainScroller.offsetHeight, treeView.totalBounds.height}px"

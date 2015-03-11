@@ -48,7 +48,7 @@ require ['droplet'], (droplet) ->
     //Sample 1 program
     basic,simple,text
     space, separated ,text
-    quoted, "text ,handled"
+    quoted,"text ,handled",3
     '''
     sample2: '''
     //Sample 2 Program
